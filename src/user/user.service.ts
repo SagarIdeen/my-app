@@ -17,8 +17,8 @@ export class UserService {
         return this.usersRepository.find()
     }
 
-    create(createUserDto: CreateUserDto){
-        return this.usersRepository.save(createUserDto);
+    async create(createUserDto: CreateUserDto){
+        return await this.usersRepository.save(createUserDto);
     }
 
     update(updateUserDto: UpdateUserDto,  userId: number ){
@@ -28,6 +28,10 @@ export class UserService {
     show(id: number ){
         return this.usersRepository.findOne({ where: { id }});
         // return this.usersRepository.findOne({ where: { id: userId}});
+    }
+
+    async findByEmail(email: string ): Promise<User| undefined>{
+        return this.usersRepository.findOne({ where: { email }});
     }
 
     delete(userId: number){
