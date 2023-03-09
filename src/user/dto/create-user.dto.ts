@@ -12,4 +12,7 @@ export class CreateUserDto {
 
     @IsString({each: true})
     readonly places: string[];
+
+    @IsString({each:true})
+    readonly photos: string[];
 }

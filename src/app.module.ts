@@ -8,6 +8,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { Place } from './user/entity/place-entity';
+import { Photo } from './user/entity/photo-entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { Place } from './user/entity/place-entity';
       username: 'user1',
       password: 'changeme',
       database: 'MyApp',
-      entities: [User,Place],
+      entities: [User,Place,Photo],
       synchronize: true,
     }),
     UserModule,

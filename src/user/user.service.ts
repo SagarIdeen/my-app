@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Photo } from './entity/photo-entity';
 import { Place } from './entity/place-entity';
 import { User } from './entity/user-entity';
 
@@ -12,14 +13,16 @@ export class UserService {
         @InjectRepository(User)
         private usersRepository: Repository<User>,
 
-
         @InjectRepository(Place)
         private readonly placeRepository: Repository<Place>,
+
+        @InjectRepository(Photo)
+        private readonly photoRepository: Repository<Photo>
 
       ) {}
 
     get(): Promise<User[]> {
-        return this.usersRepository.find({relations:['places']})
+        return this.usersRepository.find({relations:['places','photos']})
     }
 
     async create(createUserDto: CreateUserDto){
@@ -27,10 +30,15 @@ export class UserService {
         const places = await Promise.all(
             createUserDto.places.map(place => this.preloadPlacebyPlace(place))
         )
+        const photos = await Promise.all(
+            createUserDto.photos.map(photo => this.userPhotoUpload(photo))
+        )
+        
 
         const user = await this.usersRepository.create({
             ...createUserDto,
             places,
+            photos
         });
         return this.usersRepository.save(user); 
     }
@@ -48,13 +56,13 @@ export class UserService {
             places
         });
         if(!user){
-            throw new NotFoundException(`coffee #${userId} not found`)
+            throw new NotFoundException(`user #${userId} not found`)
         }
         return this.usersRepository.save(user); 
     }
 
     show(id: number ){
-        return this.usersRepository.findOne({ where: { id }, relations:['places']});
+        return this.usersRepository.findOne({ where: { id }, relations:['places', 'photos']});
         // return this.usersRepository.findOne({ where: { id: userId}});
     }
 
@@ -64,6 +72,14 @@ export class UserService {
 
     delete(userId: number){
         return this.usersRepository.delete(userId);
+    }
+
+    private async userPhotoUpload(url: string): Promise<Photo> {
+        
+       
+       
+        return this.photoRepository.save({ url });
+
     }
 
     private async preloadPlacebyPlace(place: string): Promise<Place> {

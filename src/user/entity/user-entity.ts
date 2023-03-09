@@ -1,4 +1,5 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Photo } from "./photo-entity";
 import { Place } from "./place-entity";
 
 @Entity()
@@ -24,4 +25,7 @@ password: string;
     }
     )
 places: Place[];
+
+@OneToMany(()=> Photo, (photo) => photo.user)
+photos: Photo[]
 }
