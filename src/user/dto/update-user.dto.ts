@@ -9,4 +9,7 @@ export class UpdateUserDto {
 
     @IsString()
     password: string;
+
+    @IsString({each: true})
+    readonly places: string[];
 }
